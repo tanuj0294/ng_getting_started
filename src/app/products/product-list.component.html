@@ -1,0 +1,66 @@
+<div class="card">
+    <div class="card-header">
+        {{pageTitle}}
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">Filter By:</div>
+            <div class="col-md-4">
+                <!--This event binding of change wont work for key presses :( it will work
+                    when we type and the text box loses focus, just type something and click
+                    outside the text box, but event binding for (input) will work.-->
+                <!--(keypress) wont work with backspace-->
+                <!--(keydown) triggers every time a key is pushed down. 
+                    Hence always lags by 1 character; as it gets the element state before the keystroke was registered.-->
+                <!--(keyup) triggers every time a key push event has completed, hence this also includes the most recent character.-->
+                <!--<input type="text" (input)='toggleImage()' [(ngModel)] = 'listFilter' />-->
+                <input type="text"
+                       [(ngModel)]='listFilter' />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Filtered by: {{listFilter}}</h4>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table"
+                   *ngIf='products && products.length'>
+                <thead>
+                    <tr>
+                        <th>
+                            <button [style.background-color]="!showImage ? 'green' : 'red'" (click)='toggleImage()'
+                                    class="btn btn-primary">{{showImage ? 'Hide' : 'Show'}} Image</button>
+                        </th>
+                        <th>Product</th>
+                        <th>Code</th>
+                        <th>Available</th>
+                        <th>Price</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let product of filteredProducts'>
+                        <!-- below is interpolation -->
+                        <!-- <td><img src={{product.imageUrl}}></td> -->
+                        <!-- normal image tag -->
+                        <!--<img src="paris.jpg" alt="Paris" style="width:150px">-->
+                        <!-- below is property binding-->
+                        <td><img *ngIf='showImage'
+                                 [src]='product.imageUrl'
+                                 [title]='product.productName'
+                                 [style.width.px]="imagewidth"></td>
+                        <td>{{product.productName | uppercase}}</td>
+                        <td>{{product.productCode | convertToSpaces : '-'}}</td>
+                        <td>{{product.releaseDate}}</td>
+                        <td>{{product.price | currency:'INR':'symbol':'1.2-3'}}</td>
+                       <!-- <td>{{product.starRating}}</td> -->
+                       <!--here notify is the property of nested star rating component and can be used as 
+                    even binding target since its decorated with @Output-->
+                       <td><pm-star [rating] = 'product.starRating' (notify) = 'onNotify($event)' ></pm-star></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
